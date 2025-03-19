@@ -1,250 +1,71 @@
-<style type="text/css">
- .div10{
-	 top:522px;
-	 background:#F4F4F4;
-	 border:solid 1px #dddddd;
-	 height:40px;
-	 text-align:center;
-	 height:40px;
-	 line-height:40px;
- }
- .btn90{
- 	width: 90px; 
- 	background:#2191DC;
- 	color:#FFF;
- }
- .btnback{
- 	width: 90px;
- 	 background:#808080;
- 	 color:#FFF;
- }
- 
-</style>
-<script type="text/javascript">
-function openErrTab(){
-	// 定位tab页
-	var titleTab = $(".validatebox-invalid").first().closest(".fitpanel").attr("titleTab");
-	// 打开tab页
-	var  a=$(".validatebox-invalid").eq(0).parent().prevAll("label").eq(0).text(); 
-	$("#pTabs").tabs("select",titleTab);
-	$.messager.alert("提示", "当前Tab页中表单填写不完整,请您填写--"+a);
-}
-
-//验证添加的人员是否为禁业人员
-function isEmployeeLimit(zjhm){
-	var ret = false;
-	var url='/web/pxk/comm/isLimitEmployee.do';
-	$.ajax({
-		type : "POST", //http请求方式
-		url : url, //服务器段url地址
-		data : {zjhm:zjhm}, //发送给服务器段的数据 
-		async:false, 
-		dataType : "json",
-		success : function(json) {
-			ret =  json;
-		},
-		error : function() {
-		}
-	});
-	console.log("zjhm:"+zjhm+",ret:"+ret);
-	return ret;
-}
-
-function dateFmt(value, row, index) {
-	if(value&&value.length>=10){
-		return value.substring(0,10);
-	} else {
-		return  value;
-	}
-	
-};
-function actflagFmt(value, row, index) {
-	 var json = '[{"id":"1","text":"增加"},{"id":"2","text":"变更"},{"id":"9","text":"注销"}]';
-	 var jsonObj = JSON.parse(json);
-    return DictFormatter(jsonObj,value);
-};
-</script>
-
-<link rel="stylesheet" type="text/css"	href="/web/static/jquery-easyui-1.4/themes/default/easyui.css?v=2023101416">
-<link rel="stylesheet" type="text/css"  href="/web/static/jquery-easyui-1.4/themes/icon.css?v=2023101416">
-<link rel="stylesheet" type="text/css"  href="/web/styles/css/sysIndex.css">  
-<link rel="stylesheet" type="text/css" href="/web/styles/index.css?v=2023092312" >
-<link rel="stylesheet" type="text/css" href="/web/styles/public.css" >
-<link rel="stylesheet" type="text/css" href="/web/styles/newAdd.css" >
-
-<link rel="stylesheet" type="text/css" href="/web/static/js/viewerjs-main/viewer.min.css" >
-
-<script type="text/javascript"  src="/web/static/jquery-easyui-1.4/jquery.min.js?v=2023101416"></script>
-<script type="text/javascript"	src="/web/static/jquery-easyui-1.4/jquery.easyui.min.js?v=2023101416"></script>
-<script type="text/javascript"	src="/web/static/jquery-easyui-1.4.5/jquery.media.js"></script>
-<script type="text/javascript"	src="/web/static/jquery-easyui-1.4.5/mammoth.browser.js"></script>
-<script type="text/javascript"	src="/web/static/jquery-easyui-1.4.5/locale/easyui-lang-zh_CN.js"></script>
-
- <script type="text/javascript"  src="/web/static/js/viewerjs-main/viewer.min.js"></script>
-
-<script type="text/javascript" 	src="/web/scripts/json2.js"></script>
-<script type="text/javascript"	src="/web/scripts/validatabox.rules.js?v=20240127"></script>
-<script type="text/javascript"	src="/web/scripts/billyExtends.js"></script>
-<script type="text/javascript"	src="/web/scripts/billyUtil.js?v=1.9.9"></script>
-
- 
-<html>
-<head> 
-<style type="text/css">
-* { margin:0.3px; padding:0; }  
- .div10{
-	 top:522px;
-	 background:#F4F4F4;
-	 border:solid 1px #dddddd;
-	 height:40px;
-	 text-align:center;
-	 height:40px;
-	 line-height:40px;
- }
- .btn90{
- 	width: 90px; 
- 	background:#2191DC;
- 	color:#FFF;
- }
- .btnback{
- 	width: 90px;
- 	 background:#808080;
- 	 color:#FFF;
- }
-</style>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-<title></title>
-</head>
-<body>
-
-	<!--查询区域  -->
-	<!--<div class="easyui-accordion" id="queryDiv" collapsible=true  -->
-	<div  class="easyui-accordion" id="queryDiv" collapsible=true 
-		style="width: 100%; padding: 0px;border:0px">
-		<div data-options="iconCls:'icon-search',collapsed:false,collapsible:false"
-			style="margin:5px 0 5px 5px;padding:5px 0 5px 5px;">
-			<form id="queryForm" enctype="multipart/form-data" style="margin:5px 0 5px;">
-				<table id='query_baseGrid' style="width:auto">
-					<tr id='query_butten' />
-				</table>
-			</form>
-		</div>
-	</div>
-
-
-	<!--查看面板  -->
-	<div id="dlg_view" class="easyui-dialog"  data-options="resizable:true,modal:true" 
-		style="width: 50%; height: 400px; top:5px; padding: 10px 10px" closed="true"
-		buttons="#dlg_view_buttons">
-		<div class="ftitle"></div>
-		<form id="form_window_view" method="post" style="width: 100px" enctype="multipart/form-data">
-		</form>
-	</div>
-	
-	<!--弹出的增加面板  -->
-	<div id="dlg_add" class="easyui-dialog" data-options="resizable:true,modal:true" 
-		style="width:68%; height: 460px; top:5px; padding: 10px 10px" closed="true"
-		buttons="#dlg_add_buttons">
-		<div class="ftitle"></div>
-		<form id="form_window_add" method="post" enctype="multipart/form-data">
-		</form>
-	</div>
-
-	<!--弹出的修改面板  -->
-	<div id="dlg_edit" class="easyui-dialog" data-options="resizable:true,modal:true" 
-		style="width: 68%; height: 460px;top:5px; padding: 10px 10px" closed="true"
-		buttons="#dlg_edit_buttons">
-		<div class="ftitle"></div>
-		<form id="form_window_edit" method="post" enctype="multipart/form-data">
-		</form>
-	</div>
-
-
-    <!--查看面板按键  -->
-	<div id="dlg_view_buttons">
-		<a href="javascript:void(0)" id='viewButton' class="easyui-linkbutton" 
-			iconCls="icon-ok"
-			onclick="javascript:$('#dlg_view').dialog('close')"
-			style="width: 90px;">关闭</a>
-	</div>
-	
-	<!--增加面板按键  -->
-	<div id="dlg_add_buttons">
-		<a href="javascript:void(0)" id='addButton' class="easyui-linkbutton"
-			iconCls="icon-ok" onclick="" style="width: 90px;">保存</a> <a
-			href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-delet"
-			onclick="javascript:$('#dlg_add').dialog('close')"
-			style="width: 90px;">取消</a>
-	</div>
-
-	<!--修改面板按键  -->
-	<div id="dlg_edit_buttons">
-		<a href="javascript:void(0)" id='editButton' class="easyui-linkbutton"
-			iconCls="icon-ok" onclick="" style="width: 90px;">修改</a> <a
-			href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-delet"
-			onclick="javascript:$('#dlg_edit').dialog('close')"
-			style="width: 90px;">取消</a>
-	</div>
-
-	<!--grid区域  -->
-	<table id="baseGrid" style="width: 100%; height: 340px;"></table>
-</body>
-</html>  
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<link rel="stylesheet" type="text/css" href="/web/styles/table.css" >
-<script type="text/javascript" src="/web/scripts/jquery.qrcode.min.js"></script> 
+<html>
 <head>
-<style type="text/css">
- td{font-size:26px;}
- th{font-size:28px;}
-</style>
+    <meta charset="UTF-8">
+    <title>企业信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-
-<div align="center">
-<table  style="width: 98%;" border="1" cellspacing="0" cellpadding="20" >
-	<tr align="center">
-		<td colspan="4" height="100px"><font size="10px;">企业信息</font></td>
-	</tr>
-	<tr height="100px">
-		<td width="15%" >名称:</td>
-		<td width="35%" align="center">绿园区一家人民间肘子饭店</td>
-		<td width="15%" >社会信用代码:</td>
-		<td width="35%" align="center">92220106MA14BB3W3H</td>
-	</tr>
-	<tr height="100px">
-		<td width="15%" >法定代表人:</td>
-		<td width="35%" align="center">林永军</td>
-		<td width="15%" >许可证编号:</td>
-		<td width="35%" align="center">JY22201060154131</td>
-	</tr>
-	<tr height="100px">
-		<td >经营场所:</td>
-		<td colspan="3" align="center">吉林省--长春市--绿园区--旺达小区2525号1号楼108室</td>
-	</tr>
-	<tr height="100px">
-		<td >发证机构:</td>
-		<td align="center">长春市市场监督管理局绿园分局</td>
-		<td >签发人:</td>
-		<td align="center">刘威</td>
-	</tr>
-	<tr height="100px">
-		<td >发证日期:</td>
-		<td align="center">2024-05-14</td>
-		<td >有效期:</td>
-		<td align="center">2027-10-09</td>
-	</tr>
-	<tr>
-	 <td colspan="4" align="center" height="100px">
-	 	<a href="/web/print/findlice.do?id=1292084&type=2">[企业详细信息]</a>
-	 </td>
-	</tr>
-</table>
-</div>
-
-
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">企业信息</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>名称</td>
+                <td>绿园区一家人民间肘子饭店</td>
+            </tr>
+            <tr>
+                <td>社会信用代码</td>
+                <td>92220106MA14BB3W3H</td>
+            </tr>
+            <tr>
+                <td>法定代表人</td>
+                <td>林永军</td>
+            </tr>
+            <tr>
+                <td>许可证编号</td>
+                <td>JY22201060154131</td>
+            </tr>
+            <tr>
+                <td>经营场所</td>
+                <td>吉林省--长春市--绿园区--旺达小区2525号1号楼108室</td>
+            </tr>
+            <tr>
+                <td>发证机构</td>
+                <td>长春市市场监督管理局绿园分局</td>
+            </tr>
+            <tr>
+                <td>签发人</td>
+                <td>刘威</td>
+            </tr>
+            <tr>
+                <td>发证日期</td>
+                <td>2024-05-14</td>
+            </tr>
+            <tr>
+                <td>有效期</td>
+                <td>2027-10-09</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="text-align:center;">
+        <a href="##">企业详细信息</a>
+    </p>
 </body>
 </html>
